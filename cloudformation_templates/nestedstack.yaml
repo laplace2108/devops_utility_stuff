@@ -1,0 +1,23 @@
+Parameters:
+  SSHKey:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Name of an existing EC" Keypair to enable SSH access to the intance
+
+Resources:
+  NestedStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/cloudformation-templates-us-east-1/LAMP_Single_Instance.template
+      Parameters:
+        KeyName: !Ref SSHKey
+        DBName: "mydb"
+        DBUser: "user"
+        DBPassword: "pass"
+        DBRootPassword: "passroot"
+        InstanceType: t2.micro
+        SSHLocation: "0.0.0.0/0"
+Outputs:
+  StackRef:
+    Value: !Ref NestedStack
+  OutputFromNestedStack:
+    Value: !GetAtt NestedStack.Outputs.WebsiteURL 
